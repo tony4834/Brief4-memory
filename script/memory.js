@@ -2,7 +2,7 @@
 let case_concernee = document.querySelectorAll(".card");
 /* console.log(case_concernee); */
 
-let nb_case = 16 ;
+let nb_case = 16 ; // doit être un multiple de 4
 let index_case ;
 let index_img ;
 let img_alea ;
@@ -19,16 +19,15 @@ let cb_box = document.getElementsByClassName("side");
 
 
 /* *************** LANCEMENT DES FCTS *****************/
-/* *************** */
-/* *************** */
 
-/* initialisationPlateau(); */
-nbAleaUnik();
+initialisationPlateau();
+/* nbAleaUnik(); */
 /* grille(tab_index_case); */
 
-/* *************** */
-/* *************** */
-/* *************** */
+
+/* *************** LANCEMENT DES FCTS --- FIN *****************/
+
+
 
 // Fonction qui renvoie un nombre aléatoire pioché entre 1 et nombre d'avatars (longueur du tableau).
 // Afin de déterminer un avatar de manière aléatoire
@@ -39,119 +38,53 @@ function alea_choix_img()
 }
 
 
-function grille(tab_index_casetab_index_case_img)
+function grille(sorted_tab_index_case)
 {
     let chaine = "";
-    let bootstrapRow = document.getElementsByClassName("row");
-    console.log(bootstrapRow);
-    let tab = tab_index_case;
-    console.log(tab.sort());
+    let sorted_tab = sorted_tab_index_case;
 
-    for (let i=0; i<nb_case; i++)
-    {   
-        for (let j=0; j<tab.length;j++){
-            console.log("toto")
-        }
+    let div_container = document.getElementsByClassName("container");
+    // on transforme le HTMLCollector en Tableau pour pouvoir le parser
+    let container_item = [].map.call(div_container, item => item); 
+    
+
+    let n=0; //artifice s'incrémente en fin de boucle de +4
+    for (let j=0; j<nb_case/4 ; j++)// 
+    {    
         chaine += 
-        "<div class=\"container-card\">"+
-            "<div class=\"card\">"+
-                "<div class=\"side side--front\" id=\"case_"+i+"_f\">"+
-                    "<img src='images/codi.png' alt=\"\">"+
-                "</div>\n"+
-                "<div class=\"side side--back\" id=\"case_"+i+"_b\">"+
-                    "<img src='images/"+"codi"+".png' alt=\"\">"+
-                "</div>"+
-            "</div>"+
-        "</div>"
-        ;
-    }
+        "<div class=\"row\">" ;
 
-    bootstrapRow[0].innerHTML= chaine;
-    /* console.log(bootstrapRow);   */ 
-}
-
-/* *************** */
-/* *************** */
-/* *************** */
-
-function initialisationPlateau_old()
-{
-    while (tab_index_case.length<16)
-    {
-        index_img = alea_choix_img(); 
-        choix_img = tab_img[index_img][0];
-/*         console.log("************")
-        console.log(choix_img); */
-        
-        let present = false;
-
-        for(let i=0; i<tab_img.length; i++)
+        for (let i=0; i<4; i++) // 4 colonnes par ligne : toujours
         {
-            // si l'image n'a pas été choisie plus de 2 fois
-            // On teste si le compteur (qui gère le nombre de fois où l'image est présente sur le plateau) est inf&érieur ou égal à deux
-            if (tab_img[i][0]== choix_img && tab_img[i][1]<2) 
-            {
-                index_case = Math.floor(Math.random()*nb_case);    
-                /* console.log("index_case :",index_case, " - ",choix_img, " - count sur plateau NON actua :", tab_img[i][1]); */
-
-                // boucle pour s'assurer que l'index de la case pioché aléatoirement n'a pas déjà été pioché  OU 
-/*              /* pioches = tab_index_case.filter(e => e[j][0] == index_case);
-                const pioches = tab_index_case.filter(function (pioche) {
-                return tab_index_case[j][0] == index_case ;
-                });   */
-
-                for(var j=0; j<tab_index_case.length; j++) 
-                {  
-                    /* console.log(j, " : index_case_deja_pioche :",pioches); */
-                    if(index_case === tab_index_case[j][0])
-                    {
-                        present = true;
-                    }
-                }
-        
-                if (present == false) // si l'index n'a jamais été pioché auparavant alors on vient mettre l'image choisie
-                {   
-                    tab_index_case.push([index_case,choix_img]);
-                    // ci dessous on vient mettre à jour le tableau image, avce la mise à jour du compteur pour l'image choisie
-                    count_img_retenue = tab_img[i][1];  
-                    count_img_retenue ++;
-                    tab_img[i][1]=count_img_retenue;     
-                    /* console.log(" - index case plateau : ",index_case,"count sur plateau actua;", count_img_retenue)  */
-                    
-                    // ici je relance la fct index_case pour obtenir le second emplacement de l'image qui j'ai piochée
-                    present = true ;         
-                    while (present == true)
-                    {   
-                        index_case = Math.floor(Math.random()*nb_case); 
-                        // boucle pour s'assurer que l'index de la case pioché aléatoirement n'a pas déjà été pioché
-                        for(var j=0; j<tab_index_case.length; j++) 
-                        {
-                            if(index_case === tab_index_case[j][0])
-                            {
-                                present = true;
-                                break;
-                            }
-                            else
-                            {   present = false
-                            };
-                        }                        
-                    }
-
-                    if (present == false) // si l'index n'a jamais été pioché auparavant alors on vient mettre l'image choisie
-                    {   
-                        tab_index_case.push([Number(index_case),choix_img]);
-                        // ci dessous on vient mettre à jour le tableau image, avce la mise à jour du compteur pour l'image choisie
-                        count_img_retenue = tab_img[i][1];  
-                        count_img_retenue ++;
-                        tab_img[i][1]=count_img_retenue;     
-                        /* console.log(" - index case plateau : ",index_case,"count sur plateau actua 2;", count_img_retenue)  */
-                    }
-                }
-            }
+            chaine += 
+                "<div class=\"col-6 custom\">"+
+                    "<div class=\"container-card\">"+
+                        "<div class=\"card\">"+
+                            "<div class=\"side side--front\" id=\"case_"+j+"_f\">"+
+                                "<img src='images/codi.png' alt=\"\">"+
+                            "</div>\n"+
+                            "<div class=\"side side--back\" id=\"case_"+j+"_b\">"+
+                                "<img src='images/"+sorted_tab[n+i][1]+".png' alt=\"\">"+
+                            "</div>"+
+                        "</div>"+
+                    "</div>"+
+                "</div>"            
+            ;
         }
+        chaine += "</div>";
+        n = n+4;
     }
-   return tab_index_case;
-} 
+
+    container_item.forEach(function(item, index)
+    {
+        item.innerHTML= chaine;
+    }
+    );
+    
+    console.log(chaine);
+
+
+}
 
 function nbAleaUnik() {
     nb_tour = 0;
@@ -174,11 +107,11 @@ function nbAleaUnik() {
 
 function initialisationPlateau() {
 
-    while (tab_index_case.length<nb_case/2)
+    while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
         choix_img = tab_img[index_img][0];
-        present = false;
+        
 
         // Vérification du nombre d'apparitions de l'image piochée à l'aide du tableau tab_img
         for (let i=0 ; i<tab_img.length ; i++)
@@ -186,54 +119,50 @@ function initialisationPlateau() {
             // Recherche de l'image piochée dans le tableau de départ pour mettre à jour son compteur && màj du compteur si pas plus de 2 apparitions
             if (tab_img[i][0] == choix_img && tab_img[i][1]<2)
             {   
-                // Ajout de la première image choisie sans consition dans le tableau
-                if (i==1){
+                // Vérification : image n'a jamais été piochée => PAS présente dans le tableau avec méthode includes() des tableaux
+                if ((tab_index_case.includes(choix_img))==false)
+                {
                     tab_index_case.push(["",choix_img]);
+                    tab_index_case.push(["",choix_img]);// push *2 pour les paires
                     // màj du compteur
                     tab_img[i][1]=2;
-                }
-                else {
-                    // Vérification : image n'a jamais été piochée => PAS présente dans le tableau avec méthode includes() des tableaux
-                    if ((tab_index_case.includes(choix_img))==false)
-                    {
-                        tab_index_case.push(["",choix_img]);
-                        // màj du compteur
-                        tab_img[i][1]=2;
-                    }
-                }     
+                }   
             }
         }
     }
 
-    // 2ième partie de la fonction : affectation des 16 nombres aléatoires picochés aux 8 images
+
+    // ****************** 2ième partie de la fonction ****************
+
+    // Le tab_index_case à ce stade ne contient que les images, les emplacements sont vides 
+    // tab_index_case=[["",avatar1], ["",avatar1], ["",avatar2],["",avatar2], ...]
+    // Le tableau tab_alea contient les index des cases piochées aléatoirement.
+    // Il faut faire correspondre les deux tableaux
     
+    // Appel de la fct qui renvoie tab_alea rempli
     nbAleaUnik();
-    //tab_index_case.forEach((el, index)=>console.log(el, el[0], el[1], index) );
-    // équivaut à 
-    /* tab_index_case.forEach(
-        function (el, index) {
-
-            tab_alea.forEach(
-                function(nbAleatoire,index ){
-                    console.log(nbAleatoire, index)
-                    if (index==0 || index==1 )
-                    {
-                        recup += nbAleatoire
-                    }
-                    el[0] = recup;
-                }
-                );
-            return console.log(el, el[0], el[1], index);
-        }
-    ) */
-
+/*     console.log('-----------')
+    console.log(tab_alea);
     console.log(tab_index_case);
-    let images = tab_index_case.map(placement => placement[1]);
-    console.log(images);
+    console.log('-----------') */
 
-    console.log(tab_img);
-    console.log(tab_alea)
+    tab_index_case.forEach(function(el, index)
+    {
+        tab_alea.forEach(function(num, ind)
+        {
+            //console.log(index, el, el[0], el[1]);
+            if (index==ind){
+                el[0]=num;
+            }            
+            /* return console.log(num, ind); */            
+        });
+        return tab_index_case;
+        /* return console.log(index, el, el[0], el[1]); */
+    });
 
-    //console.log(tab_alea.sort((a,b)=> a-b));
+    /* console.log(tab_index_case); */
+    let sorted_tab_index_case = tab_index_case.sort((a,b)=> a[0]-b[0]);
+    /* console.log(sorted_tab_index_case); */
+    grille(sorted_tab_index_case);    
 }
 
