@@ -22,8 +22,8 @@ let cb_box = document.getElementsByClassName("side");
 /* *************** */
 /* *************** */
 
-/* initialisationPlateau(); */
-nbAleaUnik();
+initialisationPlateau();
+/* nbAleaUnik(); */
 /* grille(tab_index_case); */
 
 /* *************** */
@@ -174,11 +174,11 @@ function nbAleaUnik() {
 
 function initialisationPlateau() {
 
-    while (tab_index_case.length<nb_case/2)
+    while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
         choix_img = tab_img[index_img][0];
-        present = false;
+
 
         // Vérification du nombre d'apparitions de l'image piochée à l'aide du tableau tab_img
         for (let i=0 ; i<tab_img.length ; i++)
@@ -189,6 +189,7 @@ function initialisationPlateau() {
                 // Ajout de la première image choisie sans consition dans le tableau
                 if (i==1){
                     tab_index_case.push(["",choix_img]);
+                    tab_index_case.push(["",choix_img]);
                     // màj du compteur
                     tab_img[i][1]=2;
                 }
@@ -196,6 +197,7 @@ function initialisationPlateau() {
                     // Vérification : image n'a jamais été piochée => PAS présente dans le tableau avec méthode includes() des tableaux
                     if ((tab_index_case.includes(choix_img))==false)
                     {
+                        tab_index_case.push(["",choix_img]);
                         tab_index_case.push(["",choix_img]);
                         // màj du compteur
                         tab_img[i][1]=2;
