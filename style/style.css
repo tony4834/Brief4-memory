@@ -50,7 +50,7 @@ img{
   
 .side--front{
   background-color: blue;
-  z-index: 1;
+  /* z-index: 1; */
 }
 .side--back{
     background-color: rgb(255, 0, 157);

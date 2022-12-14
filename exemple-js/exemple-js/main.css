@@ -1,0 +1,15 @@
+
+main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 600px;
+    margin: auto;
+}
+.card2,
+.card{
+    width: 150px;
+    height: 150px;
+    background-color: blueviolet;
+    margin: 10px;
+}
