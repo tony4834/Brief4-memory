@@ -184,3 +184,19 @@ function diminuerTemps() {
     timerElement.innerText = minutes + ":" + secondes
     temps = temps <= 0 ? 0 : temps - 1
 }
+function start(){
+    var contentHeader = document.getElementById("header-content");
+    var valueText = document.getElementById("pseudo").value;
+
+    if (valueText === ''){
+        alert('Inscrit un Pseudo')
+    }
+    else{
+        contentHeader.remove();
+        document.getElementById("game").hidden = false;
+        document.getElementById("set-timer").hidden = false;
+    }
+    
+}
+/* localStorage.setItem('1' ,['avatar01', 540]);
+ *//* localStorage.clear() */
