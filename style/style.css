@@ -1,5 +1,3 @@
-
-
 body{
     background-color: #7689eb;
 }
@@ -10,7 +8,7 @@ body{
     padding-bottom:5px;
 }
 .row{
-    width:550px;
+    /* width:550px; */
     height: auto;
 }
 .container-card{
@@ -57,7 +55,11 @@ img{
     transform: rotateY(180deg);
   }
 
-#timer{
-    display: flex;
-    justify-content: center;
+
+
+@media(min-width: 440px){
+.custom{
+    width:25%;
 }
+}
+
