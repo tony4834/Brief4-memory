@@ -7,6 +7,9 @@ let index_case ;
 let index_img ;
 let img_alea ;
 
+let temps = 50;
+const timerElement = document.getElementById("timer");
+
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
 let tab_alea =[];
 let tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
@@ -43,7 +46,7 @@ function grille(sorted_tab_index_case)
     let chaine = "";
     let sorted_tab = sorted_tab_index_case;
 
-    let div_container = document.getElementsByClassName("container");
+    let div_container = document.getElementsByClassName("grille");
     // on transforme le HTMLCollector en Tableau pour pouvoir le parser
     let container_item = [].map.call(div_container, item => item); 
     
@@ -107,6 +110,7 @@ function nbAleaUnik() {
 
 function initialisationPlateau() {
 
+
     while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
@@ -163,6 +167,20 @@ function initialisationPlateau() {
     /* console.log(tab_index_case); */
     let sorted_tab_index_case = tab_index_case.sort((a,b)=> a[0]-b[0]);
     /* console.log(sorted_tab_index_case); */
-    grille(sorted_tab_index_case);    
+    grille(sorted_tab_index_case);
+
+    setInterval(diminuerTemps, 1000); 
 }
 
+
+
+function diminuerTemps() {
+    let minutes = parseInt(temps / 60, 10)
+    let secondes = parseInt(temps % 60, 10)
+
+    minutes = minutes < 10 ? "0" + minutes : minutes
+    secondes = secondes < 10 ? "0" + secondes : secondes
+
+    timerElement.innerText = minutes + ":" + secondes
+    temps = temps <= 0 ? 0 : temps - 1
+}
