@@ -43,7 +43,7 @@ function grille(sorted_tab_index_case)
     let chaine = "";
     let sorted_tab = sorted_tab_index_case;
 
-    let div_container = document.getElementsByClassName("container");
+    let div_container = document.getElementsByClassName("grille");
     // on transforme le HTMLCollector en Tableau pour pouvoir le parser
     let container_item = [].map.call(div_container, item => item); 
     
@@ -166,3 +166,19 @@ function initialisationPlateau() {
     grille(sorted_tab_index_case);    
 }
 
+function start(){
+    var contentHeader = document.getElementById("header-content");
+    var valueText = document.getElementById("pseudo").value;
+
+    if (valueText === ''){
+        alert('Inscrit un Pseudo')
+    }
+    else{
+        contentHeader.remove();
+        document.getElementById("game").hidden = false;
+        document.getElementById("set-timer").hidden = false;
+    }
+    
+}
+/* localStorage.setItem('1' ,['avatar01', 540]);
+ *//* localStorage.clear() */
