@@ -12,7 +12,18 @@
 
 
 <body>
+    <div id="timer"></div>
+    <script>
+      let temps = 50
+      const timerElement = document.getElementById("timer")
 
+      function diminuerTemps() {
+        timerElement.innerText = temps
+        temps--
+      }
+
+      setInterval(diminuerTemps, 1000)
+    </script>
     <div class="container bg-secondary"> <!-- plateau -->
 
         <div class="row">

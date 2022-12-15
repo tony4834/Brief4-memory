@@ -200,7 +200,7 @@ function initialisationPlateau() {
                         tab_index_case.push(["",choix_img]);
                         tab_index_case.push(["",choix_img]);
                         // màj du compteur
-                        tab_img[i][1]=2;
+                        tab_img[i][1]=2; 
                     }
                 }     
             }
@@ -238,4 +238,67 @@ function initialisationPlateau() {
 
     //console.log(tab_alea.sort((a,b)=> a-b));
 }
+
+//*
+function main()
+{
+     var joueurs = new Array();
+     var scores = new Array();
+ 
+ 
+    for(i = 0; i<3; i++){
+          joueurs[i] = prompt("joueur " + (i+1) + " : ");
+          scores[i] = prompt("Score " + (joueurs[i]) + " : ");
+ 
+     }
+ 
+ }
+
+storage.length{
+}
+if(!localStorage.getItem('bgcolor')) {
+    populateStorage();
+  } else {
+    setStyles();
+  }
+  
+  function populateStorage() {
+    localStorage.setItem('bgcolor', document.getElementById('bgcolor').value);
+    localStorage.setItem('font', document.getElementById('font').value);
+    localStorage.setItem('image', document.getElementById('image').value);
+  
+    setStyles();
+  }
+  
+  function setStyles() {
+    var currentColor = localStorage.getItem('bgcolor');
+    var currentFont = localStorage.getItem('font');
+    var currentImage = localStorage.getItem('image');
+  
+    document.getElementById('bgcolor').value = currentColor;
+    document.getElementById('font').value = currentFont;
+    document.getElementById('image').value = currentImage;
+  
+    htmlElem.style.backgroundColor = '#' + currentColor;
+    pElem.style.fontFamily = currentFont;
+    imgElem.setAttribute('src', currentImage);
+  }
+  
+  var sc:Number = 0;
+var mySubstring:String = new String();
+
+setInterval(affiche , 100 );
+var score;
+var a;
+function affiche() {
+        score = sc.toString();
+        a = 7;
+        for(var d=score.length-1 ; d>=0 ; d--) {
+                mySubstring = score.substr(d,1);
+                a --;
+                this["cp"+a].gotoAndStop(Number(mySubstring)+1);
+        }
+        sc += 1;
+};
+ 
 

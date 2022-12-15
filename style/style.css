@@ -57,3 +57,7 @@ img{
     transform: rotateY(180deg);
   }
 
+#timer{
+    display: flex;
+    justify-content: center;
+}
