@@ -7,30 +7,35 @@ let index_case ;
 let index_img ;
 let img_alea ;
 
-let temps = 50;
+let click1_img ;
+let click1_index ;
+let click2_img ;
+let click2_index ;
+let nb_click = 0 ;
+
+let score = 0 ;
+let count_hidden_false = 0;
+
 const timerElement = document.getElementById("timer");
+let temps = timerElement.innerHTML;
+
 
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
 let tab_alea =[];
 let tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
 ["img_8", 0],["img_9", 0],["img_10", 0],["img_11", 0],["img_12", 0],["img_13", 0]];
 
-/* let cb_box = document.getElementsByClassName("side");
-console.log(cb_box); */
-
-
-
-
 /* *************** LANCEMENT DES FCTS *****************/
+
 
 initialisationPlateau();
 /* nbAleaUnik(); */
-/* grille(tab_index_case); */
+/* grille(tab_index_case); */  
 let tabCartes = document.querySelectorAll(".card"); // pour le click sur une card. A placer après la création des éléments (fct initialisationPlateau). Utilisé par les fonctions cardClicked et isMatched
 let elt_score = document.getElementById("score");
-let elt_timer_text = document.getElementById("timer").innerHTML;
-console.log(elt_timer_text);
 cardClicked();
+
+
 
 
 /* *************** LANCEMENT DES FCTS --- FIN *****************/
@@ -91,11 +96,14 @@ function grille(sorted_tab_index_case)
 
 function cardClicked(){    
 
+    console.log("cardClicked()", tabCartes)
+
     for (let i=0; i<tabCartes.length; i++){
 
         tabCartes[i].addEventListener("click", function(){
 
             tabCartes[i].lastChild.hidden = false;
+            console.log("card clicked !!!")
 
             if (nb_click == 0)
             {                   
@@ -139,9 +147,6 @@ function isMatched(){
         // c'est gagné pour ce coup_ci : les images restent affichées et les variables réinitialisées
 
         score += 60 ;
-        
-        // Lancement de la fonction de détection fin
-        end();
 
         nb_click=0;
         click1_img="";
@@ -155,38 +160,14 @@ function isMatched(){
         console.log("Perdu");
         setTimeout(hiddenCard,1000);
     }
+    // Lancement de la fonction de détection fin
+    end();
+
     console.log("score :", score);
     elt_score.innerHTML=score;
     
     return (score, nb_click,click1_img, click1_index,click2_img, click2_index);
 }
-
-function end(){
-
-    let end = false ;
-    count_hidden_false = 0;
-
-    for (let i=0; i<tabCartes.length; i++){
-        let hidden = tabCartes[i].lastChild.hidden;
-
-        if(hidden == false){            
-            count_hidden_false ++;
-
-            if (count_hidden_false == nb_case || elt_timer_text == '00:00'){
-                console.log("Fin de la partie !!!");
-
-                // Enregistrement du score pour le pseudo dans le LocalStorage
-
-                // Relance d'une partie
-                elt_score.innerHTML = "0"; // ne fonctionne pas
-                setTimeout(initialisationPlateau, 5000);
-                
-            }
-        }
-    }
-}
-
-
 
 function hiddenCard(){
     console.log("Hidden");
@@ -199,6 +180,53 @@ function hiddenCard(){
     click2_img=""; 
     click2_index="";
 }
+
+function end(){
+    // Est appelée depuis la fct isMatched
+    let end = false ;
+    count_hidden_false = 0;
+    end_temps = false ;
+    end_win = false
+
+    for (let i=0; i<tabCartes.length; i++){
+        let hidden = tabCartes[i].lastChild.hidden;
+
+        if(hidden == false){            
+            count_hidden_false ++;
+            console.log(temps);
+            console.log("end ;",temps, temps == '00')
+
+            if (count_hidden_false == nb_case || temps == '00'){                
+                end = true;   
+                if(nb_case || temps == '00'){
+                    end_temps = true;
+                }  
+                else {
+                    end_win = true;
+                }                          
+            }
+        }
+    }
+    if (end == true){
+        console.log("Fin de la partie !!!");
+        alert("Fin de partie")
+        if (end_temps==true){
+            initialisationPlateau();
+        }
+        // Enregistrement du score pour le pseudo dans le LocalStorage
+
+        // Relance d'une partie
+        elt_score.innerHTML = "0";
+        /* setTimeout(initialisationPlateau, 5000); */
+    }
+    else if (end_win==true){
+        console.log("---------- > Traiter le end_win")
+    }
+}
+
+
+
+
 
 function nbAleaUnik() {
     nb_tour = 0;
@@ -220,6 +248,8 @@ function nbAleaUnik() {
 }
 
 function initialisationPlateau() {
+
+    console.log("initPlateau DEB");
     
     while (tab_index_case.length<nb_case)
     {
@@ -255,10 +285,6 @@ function initialisationPlateau() {
     
     // Appel de la fct qui renvoie tab_alea rempli
     nbAleaUnik();
-/*     console.log('-----------')
-    console.log(tab_alea);
-    console.log(tab_index_case);
-    console.log('-----------') */
 
     tab_index_case.forEach(function(el, index)
     {
@@ -276,24 +302,28 @@ function initialisationPlateau() {
 
     console.log(tab_index_case);
     let sorted_tab_index_case = tab_index_case.sort((a,b)=> a[0]-b[0]);
-    /* console.log(sorted_tab_index_case); */
     grille(sorted_tab_index_case);
 
+    console.log("initPlateau FIN");
+
     setInterval(diminuerTemps, 1000); 
+    temps = 50;
 }
 
 
 
 function diminuerTemps() {
-    let minutes = parseInt(temps / 60, 10)
-    let secondes = parseInt(temps % 60, 10)
+    console.log("diminuer temps");
+    let minutes = parseInt(temps / 60, 10);
+    let secondes = parseInt(temps % 60, 10);
 
-    minutes = minutes < 10 ? "0" + minutes : minutes
-    secondes = secondes < 10 ? "0" + secondes : secondes
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    secondes = secondes < 10 ? "0" + secondes : secondes;
 
-    timerElement.innerText = minutes + ":" + secondes
-    temps = temps <= 0 ? 0 : temps - 1
+    timerElement.innerText = minutes + ":" + secondes;
+    temps = temps <= 0 ? 0 : temps - 1;
 }
+
 function start(){
     var contentHeader = document.getElementById("header-content");
     var valueText = document.getElementById("pseudo").value;
@@ -306,7 +336,9 @@ function start(){
         document.getElementById("game").hidden = false;
         document.getElementById("set-timer").hidden = false;
     }
-    
+      
 }
+
+
 /* localStorage.setItem('1' ,['avatar01', 540]);
  *//* localStorage.clear() */
