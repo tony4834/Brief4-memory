@@ -15,8 +15,8 @@ let tab_alea =[];
 let tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
 ["img_8", 0],["img_9", 0],["img_10", 0],["img_11", 0],["img_12", 0],["img_13", 0]];
 
-let cb_box = document.getElementsByClassName("side");
-/* console.log(cb_box); */
+/* let cb_box = document.getElementsByClassName("side");
+console.log(cb_box); */
 
 
 
@@ -26,6 +26,11 @@ let cb_box = document.getElementsByClassName("side");
 initialisationPlateau();
 /* nbAleaUnik(); */
 /* grille(tab_index_case); */
+let tabCartes = document.querySelectorAll(".card"); // pour le click sur une card. A placer après la création des éléments (fct initialisationPlateau). Utilisé par les fonctions cardClicked et isMatched
+let elt_score = document.getElementById("score");
+let elt_timer_text = document.getElementById("timer").innerHTML;
+console.log(elt_timer_text);
+cardClicked();
 
 
 /* *************** LANCEMENT DES FCTS --- FIN *****************/
@@ -39,7 +44,6 @@ function alea_choix_img()
     let index_img = Math.floor(Math.random()*tab_img.length);  
     return index_img;
 }
-
 
 function grille(sorted_tab_index_case)
 {
@@ -62,11 +66,11 @@ function grille(sorted_tab_index_case)
             chaine += 
                 "<div class=\"col-6 custom\">"+
                     "<div class=\"container-card\">"+
-                        "<div class=\"card\">"+
-                            "<div class=\"side side--front\" id=\"case_"+j+"_f\">"+
+                        "<div id="+(n+i)+" class=\"card\">"+
+                            "<div class=\"side side--front\" id=\"case_"+(n+i)+"_f\">"+
                                 "<img src='images/codi.png' alt=\"\">"+
                             "</div>\n"+
-                            "<div class=\"side side--back\" id=\"case_"+j+"_b\">"+
+                            "<div class=\"side side--back\" id=\"case_"+(n+i)+"_b\" hidden = true>"+
                                 "<img src='images/"+sorted_tab[n+i][1]+".png' alt=\"\">"+
                             "</div>"+
                         "</div>"+
@@ -77,16 +81,123 @@ function grille(sorted_tab_index_case)
         chaine += "</div>";
         n = n+4;
     }
-
     container_item.forEach(function(item, index)
     {
         item.innerHTML= chaine;
     }
-    );
+    );    
+    /* console.log(chaine); */
+}
+
+function cardClicked(){    
+
+    for (let i=0; i<tabCartes.length; i++){
+
+        tabCartes[i].addEventListener("click", function(){
+
+            tabCartes[i].lastChild.hidden = false;
+
+            if (nb_click == 0)
+            {                   
+                click1_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
+                click1_index = tabCartes[i].id;
+                
+                nb_click ++;
+                
+            }
+            else if (nb_click == 1)
+            {                   
+                click2_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
+                click2_index = tabCartes[i].id;
+            
+                nb_click = 0;
+
+                // Test à faire avant de lancer la fct de vérification : 
+                // L'utilisateur a cliqué 2 fois sur la même image
+                if (click1_index == click2_index)
+                {
+                    console.log("erreur : 2 fois la même case cliquée !!!")
+                    nb_click = 1;
+                }
+                else {
+                    isMatched();
+                }
+            } 
+            
+            return (nb_click, click1_img, click1_index, click2_img , click2_index);
+        }
+        );
+    };
+}
+
+function isMatched(){
+    // contrôle de l'affichage des images ;
+    // calcul des scores;
     
-    console.log(chaine);
+    if (click1_img == click2_img){
+        console.log("Gagné pour ce coup!!!");
+        // c'est gagné pour ce coup_ci : les images restent affichées et les variables réinitialisées
+
+        score += 60 ;
+        
+        // Lancement de la fonction de détection fin
+        end();
+
+        nb_click=0;
+        click1_img="";
+        click1_index="";
+        click2_img=""; 
+        click2_index="";
+    }
+    else // c'est perdu : les images sont masquées
+    {
+        score = score - 30 ;
+        console.log("Perdu");
+        setTimeout(hiddenCard,1000);
+    }
+    console.log("score :", score);
+    elt_score.innerHTML=score;
+    
+    return (score, nb_click,click1_img, click1_index,click2_img, click2_index);
+}
+
+function end(){
+
+    let end = false ;
+    count_hidden_false = 0;
+
+    for (let i=0; i<tabCartes.length; i++){
+        let hidden = tabCartes[i].lastChild.hidden;
+
+        if(hidden == false){            
+            count_hidden_false ++;
+
+            if (count_hidden_false == nb_case || elt_timer_text == '00:00'){
+                console.log("Fin de la partie !!!");
+
+                // Enregistrement du score pour le pseudo dans le LocalStorage
+
+                // Relance d'une partie
+                elt_score.innerHTML = "0"; // ne fonctionne pas
+                setTimeout(initialisationPlateau, 5000);
+                
+            }
+        }
+    }
+}
 
 
+
+function hiddenCard(){
+    console.log("Hidden");
+    tabCartes[click1_index].lastChild.hidden = true;
+    tabCartes[click2_index].lastChild.hidden = true;
+
+    nb_click=0;
+    click1_img="";
+    click1_index="";
+    click2_img=""; 
+    click2_index="";
 }
 
 function nbAleaUnik() {
@@ -109,8 +220,7 @@ function nbAleaUnik() {
 }
 
 function initialisationPlateau() {
-
-
+    
     while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
@@ -164,7 +274,7 @@ function initialisationPlateau() {
         /* return console.log(index, el, el[0], el[1]); */
     });
 
-    /* console.log(tab_index_case); */
+    console.log(tab_index_case);
     let sorted_tab_index_case = tab_index_case.sort((a,b)=> a[0]-b[0]);
     /* console.log(sorted_tab_index_case); */
     grille(sorted_tab_index_case);
