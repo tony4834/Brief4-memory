@@ -1,15 +1,34 @@
 body{
-    background-color: #7689eb;
+    background-image: url(../images/fond.png);
+}
+
+.repere{
+    border:red solid 5px
+}
+
+.section-fond{
+    background-color: rgba(0,0,0,0.05);
+    height:100vh;
+}
+
+h1{
+    color: aliceblue;
 }
 
 .container{
     max-width: fit-content;
-    padding-top:10px;
-    padding-bottom:5px;
+    border: #150069 solid 2px;
+    background-color: rgb(128, 255, 0);
 }
 .row{
     /* width:550px; */
     height: auto;
+    background-color: rgb(162, 255, 0);
+    padding-top: 10px;
+}
+
+.bcg_accueil{
+    background-color: rgb(169, 169, 169);
 }
 .container-card{
     width: 110px;
@@ -27,18 +46,19 @@ img{
     border:1px solid black;
     width: 100px;
     height:100px;
-    background-color: blue;
+    background-color: rgb(208, 0, 0);
     position: absolute;
     box-shadow: rgba(0,0,0,0.35) 0px 5px 15px;
     transition: transform 500ms ease-in-out;
     transform-style: preserve-3d;
+    border-radius: 10px;
 }  
 /* .card:hover{
     transform: rotateY(180deg);
 }
  */
 .side{
-    border: red solid 5 px;
+    border: rgb(0, 0, 0) solid 5 px;
     width: 100px;
     height: 100px;
     position: absolute;
@@ -47,11 +67,11 @@ img{
 }
   
 .side--front{
-  background-color: blue;
+  background-color: rgb(0, 0, 113);
   /* z-index: 1; */
 }
 .side--back{
-    background-color: rgb(255, 0, 157);
+    background-color: rgb(5, 0, 91);
     transform: rotateY(180deg);
   }
 
@@ -68,3 +88,12 @@ img{
     justify-content: center;
 }
 
+button{
+    margin: 10px;
+}
+
+#set-timer{
+    
+    margin-bottom: 20px;
+   
+}
