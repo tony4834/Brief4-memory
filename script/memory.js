@@ -194,7 +194,6 @@ function isMatched(){
 }
 
 function hiddenCard(){
-    console.log("Hidden");
     tabCartes[click1_index].lastChild.hidden = true;
     tabCartes[click2_index].lastChild.hidden = true;
 
@@ -283,10 +282,9 @@ function end(){
             else if (end_temps==true || arret == true){
                 alert ("Vous avez perdu")
             }            
-          }, 500)
+          }, 500) ;
 
-        elt_score.innerHTML="0";
-        score = 0 ;
+        console.log("FIN ----  > Fonction End");
           
         
         // Relance d'une partie Oui/Non 
@@ -294,7 +292,7 @@ function end(){
             nelle_Partie();
           }, 1000)       
     }
-    console.log("FIN ----  > Fonction End");
+    
 }
 
 function currentTime(){
@@ -326,11 +324,11 @@ function nelle_Partie() {
     if (confirm("Voulez vous faire une nouvelle partie?")) {
         setTimeout(() => {
             initialisationPlateau();
-          }, 500)
+          }, 100)
     }
     else{
         alert("Non merci ; pas de nouvelle partie ;")
-        console.log("Pas de nouvelle partie")
+        console.log("Pas de nouvelle partie, valeur var arret (doit être à false):", arret)
     }
 }
 
