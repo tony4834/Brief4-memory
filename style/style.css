@@ -1,6 +1,11 @@
 body{
-    background-image: url(../images/fond.png);
+    background-image: url(../images/fond-de-jeux2.webp);
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
 }
+
 
 .repere{
     border:red solid 5px
@@ -15,16 +20,17 @@ h1{
     color: aliceblue;
 }
 
-.container{
+.container {
     max-width: fit-content;
-    border: #150069 solid 2px;
-    background-color: rgb(128, 255, 0);
+
+    background-repeat: no-repeat;
+    background-size: cover;
+
 }
 .row{
     /* width:550px; */
     height: auto;
-    background-color: rgb(162, 255, 0);
-    padding-top: 10px;
+
 }
 
 .bcg_accueil{

@@ -20,6 +20,9 @@ const timerElement = document.getElementById("timer");
 let temps = timerElement.innerHTML;
 
 
+
+
+
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
 let tab_alea =[];
 let tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
@@ -328,6 +331,9 @@ function start(){
     var contentHeader = document.getElementById("header-content");
     var valueText = document.getElementById("pseudo").value;
 
+    let el_pseudo_grille = document.getElementById("pseudo_grille");
+
+
     if (valueText === ''){
         alert('Inscrit un Pseudo')
     }
@@ -335,6 +341,9 @@ function start(){
         contentHeader.remove();
         document.getElementById("game").hidden = false;
         document.getElementById("set-timer").hidden = false;
+        console.log(valueText);
+        console.log("element pseudo de la grille :",el_pseudo_grille);
+        el_pseudo_grille.innerHTML = valueText;
     }
       
 }
