@@ -3,7 +3,7 @@ let case_concernee = document.querySelectorAll(".card");
 /* console.log(case_concernee); */
 
 let nb_case =  16; // doit être un multiple de 4
-let val_temps = 40 ;
+let val_temps = 50 ;
 
 let index_case ;
 let index_img ;
@@ -23,7 +23,7 @@ let count_hidden_false = 0;
 const timerElement = document.getElementById("timer");
 let temps = timerElement.innerHTML;
 let el_pseudo_grille = document.getElementById("pseudo_grille");
-
+let arret = new Boolean(false) ;
 
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
 let tab_alea =[];
@@ -36,7 +36,7 @@ let tabCartes ; // Objet HTML qui représentera les cards une fois la grille cr�
 /* *************** LANCEMENT DES FCTS *****************/
 
 let elt_score = document.getElementById("score");
-initialisationPlateau();
+/* initialisationPlateau(); */
 // la fct InitialisationPlateau appelle :
 /* nbAleaUnik(); */
 /* grille(tab_index_case); */ 
@@ -205,13 +205,15 @@ function hiddenCard(){
     click2_index="";
 }
 
+
 function end(){
+
     // Est appelée depuis la fct isMatched
     console.log("DEBUT ----  > Fonction End");
     let end = false ;
     count_hidden_false = 0;
     end_temps = false ;
-    end_win = false
+    end_win = false ;
 
     for (let i=0; i<tabCartes.length; i++){
         let hidden = tabCartes[i].lastChild.hidden;
@@ -230,29 +232,30 @@ function end(){
         }
     }
 
-    if (end == true){
-        console.log("Fin de la partie variable Temps!!!",end_temps );
-        console.log("Fin de la partie variable Partie!!!",end_win );
+    if (end == true || arret == true){ // la variable arret coorespond à peu près à la variable end_time mais elle passe à true via une fct qui tourne en permanence
+/*         console.log("Fin de la partie variable Temps!!!",end_temps );
+        console.log("Fin de la partie variable Partie!!!",end_win ); */
 
         elt_score.innerHTML = score;
 
-        if (end_temps==true){    
+        if (end_temps==true || arret == true){    
             console.log("---------- > Temps écoulé");
+            timerElement.innerHTML = 0 ;
         }
         else if (end_win==true){
             console.log("---------- > Toutes les paires sont trouvées")
         };
 
-        clearInterval(id_interval);
+        clearInterval(id_interval); // arrêt de l'affichage du time
 
-        // Enregistrement du score pour le pseudo dans le LocalStorage
+
+        // ---- > Enregistrement du score pour le pseudo dans le LocalStorage
         pseudo_stock = el_pseudo_grille.innerHTML;
         score_a_stock = score ;
         
         let scoreStocke = localStorage.getItem(pseudo_stock); 
         let chaine = ""; 
-        let tab_scores = document.getElementById("tab_scores");
-        
+        let tab_scores = document.getElementById("tab_scores");       
         
         if (scoreStocke === null)
         {
@@ -262,20 +265,28 @@ function end(){
             if (scoreStocke < score_a_stock) {
                 localStorage.setItem(pseudo_stock, score_a_stock);
             }
-        }
-        
+        }        
         // Récupérer les informations de LocalStorage pour mettre à jour le tableau des scores HTML
         for (i=0 ; i<localStorage.length ; i++) {
             let joueur = localStorage.key(i);
             let score_a_afficher = localStorage.getItem(joueur);
             chaine = chaine + "<br/>" + joueur + " : " + score_a_afficher + "<br/>"
-        }
-       
+        }       
         tab_scores.innerHTML = chaine ;
+        // ---- > FIN 
 
+        // Alerte Fin de partie
         setTimeout(() => {
-            alert("Fin de partie")
+            if (end_win==true){
+                alert("Vous avez gagné !!! ")
+            }
+            else if (end_temps==true || arret == true){
+                alert ("Vous avez perdu")
+            }            
           }, 500)
+
+        elt_score.innerHTML="0";
+        score = 0 ;
           
         
         // Relance d'une partie Oui/Non 
@@ -286,9 +297,32 @@ function end(){
     console.log("FIN ----  > Fonction End");
 }
 
+function currentTime(){
+    // Lancée depuis la fct initialisationPlateau;
+    // Fonction qui calcule le temps restant
+    // test de la variable arret 
+
+    if (arret == false) {
+        verif_time = setInterval(() =>{
+
+        if (temps == "00" && arret == false)
+        {
+            arret = Boolean(true) ;
+            if (arret == true) {
+                end();
+                clearInterval(verif_time);
+            }
+        }
+        }     
+        , 1000); 
+    }
+}
+   
 
 function nelle_Partie() {
     // Appelée depuis la fonction End();
+    arret = Boolean(false) ; 
+
     if (confirm("Voulez vous faire une nouvelle partie?")) {
         setTimeout(() => {
             initialisationPlateau();
@@ -296,6 +330,7 @@ function nelle_Partie() {
     }
     else{
         alert("Non merci ; pas de nouvelle partie ;")
+        console.log("Pas de nouvelle partie")
     }
 }
 
@@ -327,7 +362,8 @@ function initialisationPlateau() {
     // réinitialisation des variables dans le cas de plus d'une partie
     score = 0;
     elt_score.innerHTML="0";
-
+    arret = Boolean(false) ; // variable réinitialisée à false cf function currentTime
+    console.log("variable arret dans Initialisationplateau", arret)
     tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
     ["img_8", 0],["img_9", 0],["img_10", 0],["img_11", 0],["img_12", 0],["img_13", 0]];
     tab_index_case = [] ; // Initialisation de la variable dans le cas d'une seconde partie (et plus)
@@ -337,7 +373,6 @@ function initialisationPlateau() {
     while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
-        console.log("index_img :", index_img);
         choix_img = tab_img[index_img][0];
         
 
@@ -395,7 +430,18 @@ function initialisationPlateau() {
     console.log("initPlateau FIN");
 
     id_interval = setInterval(diminuerTemps, 1000); 
+
     temps = val_temps;
+    let timer_cache = document.getElementById("set-timer").hidden;
+
+    if (timer_cache == true) {// on est encore sur la page de connexion
+        // On lance la fct start qui cache les éléments de la connexion
+        start();
+    }
+
+    // Lancement de la fonction qui vérifie si le temps est écoulé ou non
+    currentTime()
+
 }
 
 function diminuerTemps() {
@@ -411,25 +457,26 @@ function diminuerTemps() {
 }
 
 function start(){
+    // fonction qui cache les éléments de la connexion
+
+    console.log("coucouc fct start")
+
     var contentHeader = document.getElementById("header-content");
     var valueText = document.getElementById("pseudo").value;
-
     
-
-
     if (valueText === ''){
-        alert('Inscrit un Pseudo')
+        alert('Veuillez renseigner un Pseudo')
     }
     else{
         contentHeader.remove();
         document.getElementById("game").hidden = false;
         document.getElementById("set-timer").hidden = false;
-        console.log(valueText);
-        console.log("element pseudo de la grille :",el_pseudo_grille);
         el_pseudo_grille.innerHTML = valueText;
     }
-      
 }
+
+
+
 
 /* function BoutonDroit()
 {
