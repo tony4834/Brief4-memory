@@ -2,7 +2,9 @@
 let case_concernee = document.querySelectorAll(".card");
 /* console.log(case_concernee); */
 
-let nb_case = 16 ; // doit être un multiple de 4
+let nb_case =  16; // doit être un multiple de 4
+let val_temps =180 ;
+
 let index_case ;
 let index_img ;
 let img_alea ;
@@ -13,6 +15,8 @@ let click2_img ;
 let click2_index ;
 let nb_click = 0 ;
 
+let pseudo = "";
+let id_interval ; // variable pour la fct setInterval
 let score = 0 ;
 let count_hidden_false = 0;
 
@@ -22,23 +26,24 @@ let temps = timerElement.innerHTML;
 
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
 let tab_alea =[];
-let tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
-["img_8", 0],["img_9", 0],["img_10", 0],["img_11", 0],["img_12", 0],["img_13", 0]];
+let tab_img = []; // voir fonction initialisationPlateau
+let tabCartes ; // Objet HTML qui représentera les cards une fois la grille créée;
+
+
+
 
 /* *************** LANCEMENT DES FCTS *****************/
 
-
-initialisationPlateau();
-/* nbAleaUnik(); */
-/* grille(tab_index_case); */  
-let tabCartes = document.querySelectorAll(".card"); // pour le click sur une card. A placer après la création des éléments (fct initialisationPlateau). Utilisé par les fonctions cardClicked et isMatched
 let elt_score = document.getElementById("score");
-cardClicked();
+initialisationPlateau();
+// la fct InitialisationPlateau appelle :
+/* nbAleaUnik(); */
+/* grille(tab_index_case); */ 
+/* cardClicked() */
+
+/* *************** LANCEMENT DES FCTS --- FIN *********/
 
 
-
-
-/* *************** LANCEMENT DES FCTS --- FIN *****************/
 
 
 
@@ -91,6 +96,9 @@ function grille(sorted_tab_index_case)
         item.innerHTML= chaine;
     }
     );    
+
+    tabCartes = document.querySelectorAll(".card"); 
+    return tabCartes ;
     /* console.log(chaine); */
 }
 
@@ -98,45 +106,55 @@ function cardClicked(){
 
     console.log("cardClicked()", tabCartes)
 
-    for (let i=0; i<tabCartes.length; i++){
+    for (let i=0; i<tabCartes.length; i++){    
 
+    
         tabCartes[i].addEventListener("click", function(){
 
-            tabCartes[i].lastChild.hidden = false;
-            console.log("card clicked !!!")
+            if (tabCartes[i].lastChild.hidden == true) {
 
-            if (nb_click == 0)
-            {                   
-                click1_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
-                click1_index = tabCartes[i].id;
-                
-                nb_click ++;
-                
-            }
-            else if (nb_click == 1)
-            {                   
-                click2_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
-                click2_index = tabCartes[i].id;
-            
-                nb_click = 0;
+                tabCartes[i].lastChild.hidden = false;// au click la carte back (last child) n'est plus masquée 
 
-                // Test à faire avant de lancer la fct de vérification : 
-                // L'utilisateur a cliqué 2 fois sur la même image
-                if (click1_index == click2_index)
-                {
-                    console.log("erreur : 2 fois la même case cliquée !!!")
-                    nb_click = 1;
+                let verif_match = false ;
+                console.log("card clicked !!! nb click :", nb_click)
+                console.log(tabCartes[i].lastChild.hidden);
+    
+                if (nb_click == 0)// 1er click
+                {                   
+                    click1_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
+                    click1_index = tabCartes[i].id;
+                    
+                    nb_click ++;                    
                 }
-                else {
+                else if (nb_click == 1)// second click
+                {                   
+                    click2_img = tabCartes[i].lastChild.firstChild.getAttribute("src").split("/")[1].split(".")[0];
+                    click2_index = tabCartes[i].id;
+                
+                    nb_click = 0;
+    
+                    // Test à faire avant de lancer la fct de vérification : 
+                    // L'utilisateur a cliqué 2 fois sur la même image
+                    if (click1_index == click2_index)
+                    {
+                        console.log("erreur : 2 fois la même case cliquée !!!")
+                        nb_click = 1;
+                    }
+                    else {
+                        verif_match = true;
+                    }
+                } 
+    
+                if (verif_match == true){
                     isMatched();
                 }
-            } 
-            
-            return (nb_click, click1_img, click1_index, click2_img , click2_index);
+    
+                return (nb_click, click1_img, click1_index, click2_img , click2_index);
+            }            
         }
         );
     };
-}
+};
 
 function isMatched(){
     // contrôle de l'affichage des images ;
@@ -154,17 +172,22 @@ function isMatched(){
         click2_img=""; 
         click2_index="";
     }
-    else // c'est perdu : les images sont masquées
+    else // c'est perdu : les images sont remasquées au bout d'une seconde
     {
         score = score - 30 ;
         console.log("Perdu");
-        setTimeout(hiddenCard,1000);
+        /* pointer-events = none; */
+        setTimeout(() => {
+            hiddenCard();
+          }, 1000)
+        
     }
+
+    /* console.log("score :", score); */
+    elt_score.innerHTML=score;
+
     // Lancement de la fonction de détection fin
     end();
-
-    console.log("score :", score);
-    elt_score.innerHTML=score;
     
     return (score, nb_click,click1_img, click1_index,click2_img, click2_index);
 }
@@ -183,6 +206,7 @@ function hiddenCard(){
 
 function end(){
     // Est appelée depuis la fct isMatched
+    console.log("DEBUT ----  > Fonction End");
     let end = false ;
     count_hidden_false = 0;
     end_temps = false ;
@@ -193,12 +217,9 @@ function end(){
 
         if(hidden == false){            
             count_hidden_false ++;
-            console.log(temps);
-            console.log("end ;",temps, temps == '00')
-
             if (count_hidden_false == nb_case || temps == '00'){                
                 end = true;   
-                if(nb_case || temps == '00'){
+                if(temps == '00'){
                     end_temps = true;
                 }  
                 else {
@@ -207,26 +228,52 @@ function end(){
             }
         }
     }
-    if (end == true){
-        console.log("Fin de la partie !!!");
-        alert("Fin de partie")
-        if (end_temps==true){
-            initialisationPlateau();
-        }
-        // Enregistrement du score pour le pseudo dans le LocalStorage
 
-        // Relance d'une partie
-        elt_score.innerHTML = "0";
-        /* setTimeout(initialisationPlateau, 5000); */
+    if (end == true){
+        console.log("Fin de la partie variable Temps!!!",end_temps );
+        console.log("Fin de la partie variable Partie!!!",end_win );
+
+        elt_score.innerHTML = score;
+
+        if (end_temps==true){    
+            console.log("---------- > Temps écoulé");
+        }
+        else if (end_win==true){
+            console.log("---------- > Toutes les paires sont trouvées")
+        }
+        clearInterval(id_interval);
+
+        // Enregistrement du score pour le pseudo dans le LocalStorage
+        console.log("Score à enregistrer", score)
+        /* alert ("récup pseudo"); */
+        localStorage.setItem(pseudo, score);
+        let retourPseudo = localStorage.getItem(pseudo);        
+
+        setTimeout(() => {
+            alert("Fin de partie")
+          }, 500)
+          
+        
+        // Relance d'une partie Oui/Non 
+        setTimeout(() => {
+            nelle_Partie();
+          }, 1000)       
     }
-    else if (end_win==true){
-        console.log("---------- > Traiter le end_win")
-    }
+    console.log("FIN ----  > Fonction End");
 }
 
 
-
-
+function nelle_Partie() {
+    // Appelée depuis la fonction End();
+    if (confirm("Voulez vous faire une nouvelle partie?")) {
+        setTimeout(() => {
+            initialisationPlateau();
+          }, 500)
+    }
+    else{
+        alert("Non merci ; pas de nouvelle partie ;")
+    }
+}
 
 function nbAleaUnik() {
     nb_tour = 0;
@@ -249,11 +296,24 @@ function nbAleaUnik() {
 
 function initialisationPlateau() {
 
-    console.log("initPlateau DEB");
+    // 1ère partie : Mise à jour du tableau tab_index_case, uniquement avec les images dans un premier temps.
+    // Pour une image picochée au hasard on la pousse 2 fois dans le tableau tab_index_case. Afin de s'assurerla présence de paire d'images
+    // Mise à jour du compteur dans la variable initiale tableau tab_img. 
+
+    // réinitialisation des variables dans le cas de plus d'une partie
+    score = 0;
+    elt_score.innerHTML="0";
+
+    tab_img = [["img_1", 0],["img_2", 0],["img_3", 0],["img_4", 0],["img_5", 0],["img_6", 0],["img_7", 0],
+    ["img_8", 0],["img_9", 0],["img_10", 0],["img_11", 0],["img_12", 0],["img_13", 0]];
+    tab_index_case = [] ; // Initialisation de la variable dans le cas d'une seconde partie (et plus)
+
+    console.log("initPlateau DEB");    
     
     while (tab_index_case.length<nb_case)
     {
         index_img = alea_choix_img(); 
+        console.log("index_img :", index_img);
         choix_img = tab_img[index_img][0];
         
 
@@ -304,10 +364,14 @@ function initialisationPlateau() {
     let sorted_tab_index_case = tab_index_case.sort((a,b)=> a[0]-b[0]);
     grille(sorted_tab_index_case);
 
+    // Lancer de la fonction qui réalise le traitement des cartes cliquées directement dans cette fct initialisation du plateau. 
+    // Nécessaire lorsque l'on relance une partie après la fin de la première partie
+    cardClicked();
+
     console.log("initPlateau FIN");
 
-    setInterval(diminuerTemps, 1000); 
-    temps = 50;
+    id_interval = setInterval(diminuerTemps, 1000); 
+    temps = val_temps;
 }
 
 
@@ -339,6 +403,37 @@ function start(){
       
 }
 
+/* function BoutonDroit()
+{
+        if((event.button==2)||(event.button==3)||(event.button==4))
+                        alert('Votre texte');
+}
+        document.onmousedown=BoutonDroit; */
 
-/* localStorage.setItem('1' ,['avatar01', 540]);
- *//* localStorage.clear() */
+/* var clickmessage="No! No! C'est ma propre image, Bouton droit désactivé sur les images!"
+function disableclick(ev)
+{   if (document.all)
+    {if (event.button==2 || event.button==3)
+        {if (event.srcElement.tagName=="IMG")
+            {alert(clickmessage);
+            return false;
+            }
+        }
+    }
+    if (document.layers)
+    {
+        if (ev.which==3)
+        {alert(clickmessage);
+        return false;
+        }
+    }
+}
+function associateimages()
+{for (i=0;i<document.images.length;i++)
+    document.images[i].onmousedown=disableclick
+}
+if (document.all)
+    document.onmousedown=disableclick
+else if (document.layers)
+    associateimages()
+ */
