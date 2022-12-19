@@ -2,7 +2,7 @@
 let case_concernee = document.querySelectorAll(".card");
 /* console.log(case_concernee); */
 
-let nb_case =  16; // doit être un multiple de 4
+let nb_case =  4; // doit être un multiple de 4
 let val_temps = 40 ;
 
 let index_case ;

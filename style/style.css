@@ -6,9 +6,7 @@ body{
     background-size: cover;
 }
 
-.tab_score p {
-    padding: 5px;
-}
+
 .repere{
     border:red solid 5px
 }
@@ -91,7 +89,7 @@ img{
 }
 }
 
-#timer{
+#timer, #score, #pseudo_grille{
     display: flex;
     justify-content: center;
 }
@@ -104,4 +102,11 @@ button{
     
     margin-bottom: 20px;
    
+}
+
+.bc{
+    background-color: #fff;
+    border-radius: 10%;
+    font-family: fantasy;
+    padding: 10px;
 }
