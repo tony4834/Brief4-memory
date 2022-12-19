@@ -3,7 +3,7 @@ let case_concernee = document.querySelectorAll(".card");
 /* console.log(case_concernee); */
 
 let nb_case =  16; // doit être un multiple de 4
-let val_temps =180 ;
+let val_temps = 40 ;
 
 let index_case ;
 let index_img ;
@@ -22,9 +22,7 @@ let count_hidden_false = 0;
 
 const timerElement = document.getElementById("timer");
 let temps = timerElement.innerHTML;
-
-
-
+let el_pseudo_grille = document.getElementById("pseudo_grille");
 
 
 let tab_index_case = []; // le tableau qui est alimenté lors de la fonction initialisationPlateau [[1;img_1],[15,img_1], ....]
@@ -243,14 +241,37 @@ function end(){
         }
         else if (end_win==true){
             console.log("---------- > Toutes les paires sont trouvées")
-        }
+        };
+
         clearInterval(id_interval);
 
         // Enregistrement du score pour le pseudo dans le LocalStorage
-        console.log("Score à enregistrer", score)
-        /* alert ("récup pseudo"); */
-        localStorage.setItem(pseudo, score);
-        let retourPseudo = localStorage.getItem(pseudo);        
+        pseudo_stock = el_pseudo_grille.innerHTML;
+        score_a_stock = score ;
+        
+        let scoreStocke = localStorage.getItem(pseudo_stock); 
+        let chaine = ""; 
+        let tab_scores = document.getElementById("tab_scores");
+        
+        
+        if (scoreStocke === null)
+        {
+            localStorage.setItem(pseudo_stock, score_a_stock);
+        }
+        else {
+            if (scoreStocke < score_a_stock) {
+                localStorage.setItem(pseudo_stock, score_a_stock);
+            }
+        }
+        
+        // Récupérer les informations de LocalStorage pour mettre à jour le tableau des scores HTML
+        for (i=0 ; i<localStorage.length ; i++) {
+            let joueur = localStorage.key(i);
+            let score_a_afficher = localStorage.getItem(joueur);
+            chaine = chaine + "<br/>" + joueur + " : " + score_a_afficher + "<br/>"
+        }
+       
+        tab_scores.innerHTML = chaine ;
 
         setTimeout(() => {
             alert("Fin de partie")
@@ -377,8 +398,6 @@ function initialisationPlateau() {
     temps = val_temps;
 }
 
-
-
 function diminuerTemps() {
     console.log("diminuer temps");
     let minutes = parseInt(temps / 60, 10);
@@ -395,7 +414,7 @@ function start(){
     var contentHeader = document.getElementById("header-content");
     var valueText = document.getElementById("pseudo").value;
 
-    let el_pseudo_grille = document.getElementById("pseudo_grille");
+    
 
 
     if (valueText === ''){

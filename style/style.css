@@ -6,7 +6,9 @@ body{
     background-size: cover;
 }
 
-
+.tab_score p {
+    padding: 5px;
+}
 .repere{
     border:red solid 5px
 }
